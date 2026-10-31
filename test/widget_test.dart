@@ -3,10 +3,34 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:laboratorio_9_demo/app.dart';
 
 void main() {
-  testWidgets('muestra la lista de imágenes locales', (tester) async {
-    await tester.pumpWidget(const LaboratoryApp());
+  testWidgets('navega desde Login hasta las secciones principales', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(430, 900);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
 
-    expect(find.text('Lista de Imágenes Locales'), findsOneWidget);
-    expect(find.byType(Image), findsWidgets);
+    await tester.pumpWidget(const LaboratoryApp());
+    await tester.pumpAndSettle();
+
+    expect(find.text('N▶VA'), findsOneWidget);
+    await tester.tap(find.text('Iniciar sesión'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Hola,'), findsOneWidget);
+    expect(find.text('Tendencias'), findsOneWidget);
+
+    await tester.tap(find.text('Categorías'));
+    await tester.pumpAndSettle();
+    expect(find.text('Películas de Acción'), findsOneWidget);
+
+    await tester.tap(find.text('Mi lista'));
+    await tester.pumpAndSettle();
+    expect(find.text('Mi lista'), findsWidgets);
+
+    await tester.tap(find.text('Perfil'));
+    await tester.pumpAndSettle();
+    expect(find.text('NOVA Premium'), findsOneWidget);
   });
 }

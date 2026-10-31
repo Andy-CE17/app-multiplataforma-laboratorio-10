@@ -1,18 +1,43 @@
 import 'package:flutter/material.dart';
 
-import 'screens/image_list_view.dart';
+import 'data/movie_repository.dart';
+import 'screens/login_screen.dart';
+import 'screens/main_shell.dart';
 import 'theme/app_theme.dart';
+import 'widgets/app_frame.dart';
 
-class LaboratoryApp extends StatelessWidget {
+class LaboratoryApp extends StatefulWidget {
   const LaboratoryApp({super.key});
 
   @override
+  State<LaboratoryApp> createState() => _LaboratoryAppState();
+}
+
+class _LaboratoryAppState extends State<LaboratoryApp> {
+  @override
+  void initState() {
+    super.initState();
+    MovieRepository.instance.loadMovies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Laboratorio 9',
-      theme: AppTheme.lightTheme,
-      home: const ImageListView(),
+    final repository = MovieRepository.instance;
+    return AnimatedBuilder(
+      animation: repository,
+      builder: (context, child) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'NOVA STREAM',
+        theme: AppTheme.lightTheme(),
+        darkTheme: AppTheme.darkTheme(),
+        themeMode: repository.darkMode ? ThemeMode.dark : ThemeMode.light,
+        builder: (context, child) => AppFrame(child: child!),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const LoginScreen(),
+          '/browse': (context) => const MainShell(),
+        },
+      ),
     );
   }
 }
