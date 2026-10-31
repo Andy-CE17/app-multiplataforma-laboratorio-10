@@ -4,7 +4,6 @@ import 'data/movie_repository.dart';
 import 'screens/login_screen.dart';
 import 'screens/main_shell.dart';
 import 'theme/app_theme.dart';
-import 'widgets/app_frame.dart';
 
 class LaboratoryApp extends StatefulWidget {
   const LaboratoryApp({super.key});
@@ -31,7 +30,6 @@ class _LaboratoryAppState extends State<LaboratoryApp> {
         theme: AppTheme.lightTheme(),
         darkTheme: AppTheme.darkTheme(),
         themeMode: repository.darkMode ? ThemeMode.dark : ThemeMode.light,
-        builder: (context, child) => AppFrame(child: child!),
         initialRoute: '/',
         routes: {
           '/': (context) => const LoginScreen(),
