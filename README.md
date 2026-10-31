@@ -1,17 +1,39 @@
-# laboratorio_9_demo
+# NOVA STREAM - Laboratorio 10
 
-A new Flutter project.
+Aplicación móvil de streaming desarrollada con Flutter.
 
-## Getting Started
+## Contenido aplicado
 
-This project is a starting point for a Flutter application.
+- ListView y ListView.builder.
+- ListTile, Row, Column y Card.
+- Listas y mapas.
+- Rutas y navegación inferior.
+- Tema global.
+- Tres tipografías mediante Google Fonts.
+- Imágenes locales e imágenes desde internet.
+- Integración opcional con TMDB.
 
-A few resources to get you started if this is your first Flutter project:
+## Ejecución
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+Sin token, la aplicación utiliza datos de respaldo:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter run -d chrome
+```
+
+Con TMDB:
+
+```bash
+flutter run -d chrome --dart-define=TMDB_TOKEN=TU_TOKEN
+```
+
+## Usuario de demostración
+
+```text
+Correo: demo@nova.com
+Contraseña: 123456
+```
+
+## Atribución
+
+This product uses the TMDB API but is not endorsed or certified by TMDB.
