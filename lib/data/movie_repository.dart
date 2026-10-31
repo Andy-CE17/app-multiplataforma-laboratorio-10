@@ -14,7 +14,7 @@ class MovieRepository extends ChangeNotifier {
   bool isLoading = false;
   bool notificationsEnabled = true;
   bool darkMode = true;
-  String userName = 'Piero Huaytalla';
+  String userName = 'Andy Campos';
   String email = 'piero@nova.com';
 
   List<Movie> movies = _fallbackMovies;
