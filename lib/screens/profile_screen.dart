@@ -1,7 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../data/movie_repository.dart';
 import '../theme/app_theme.dart';
+import '../widgets/user_avatar.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -31,33 +35,35 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 28),
-              const Center(
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: NovaColors.cyan,
-                      child: CircleAvatar(
-                        radius: 57,
-                        backgroundImage: AssetImage(
-                          'assets/images/piero_avatar.png',
+              Center(
+                child: InkWell(
+                  onTap: () => _editProfile(context, repository),
+                  borderRadius: BorderRadius.circular(65),
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: NovaColors.cyan,
+                        child: UserAvatar(
+                          radius: 57,
+                          imageBytes: repository.profilePhotoBytes,
                         ),
                       ),
-                    ),
-                    Positioned(
-                      right: 2,
-                      bottom: 2,
-                      child: CircleAvatar(
-                        radius: 16,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.edit,
-                          size: 16,
-                          color: NovaColors.blue,
+                      const Positioned(
+                        right: 2,
+                        bottom: 2,
+                        child: CircleAvatar(
+                          radius: 16,
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.edit,
+                            size: 16,
+                            color: NovaColors.blue,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 14),
@@ -197,45 +203,174 @@ class ProfileScreen extends StatelessWidget {
     BuildContext context,
     MovieRepository repository,
   ) async {
-    final name = TextEditingController(text: repository.userName);
-    final email = TextEditingController(text: repository.email);
-    final saved = await showDialog<bool>(
+    final update = await showDialog<_ProfileUpdate>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Editar perfil'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: name,
-              decoration: const InputDecoration(labelText: 'Nombre'),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: email,
-              decoration: const InputDecoration(labelText: 'Correo'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Guardar'),
-          ),
-        ],
+      builder: (context) => _EditProfileDialog(
+        initialName: repository.userName,
+        initialEmail: repository.email,
+        initialPhoto: repository.profilePhotoBytes,
       ),
     );
-    if (saved == true) repository.updateProfile(name.text, email.text);
-    name.dispose();
-    email.dispose();
+    if (update == null) return;
+    repository.updateProfile(
+      update.name,
+      update.email,
+      photoBytes: update.photoBytes,
+    );
+    if (context.mounted) _message(context, 'Perfil actualizado correctamente');
   }
 
   void _message(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+  }
+}
+
+class _ProfileUpdate {
+  const _ProfileUpdate({
+    required this.name,
+    required this.email,
+    this.photoBytes,
+  });
+
+  final String name;
+  final String email;
+  final Uint8List? photoBytes;
+}
+
+class _EditProfileDialog extends StatefulWidget {
+  const _EditProfileDialog({
+    required this.initialName,
+    required this.initialEmail,
+    this.initialPhoto,
+  });
+
+  final String initialName;
+  final String initialEmail;
+  final Uint8List? initialPhoto;
+
+  @override
+  State<_EditProfileDialog> createState() => _EditProfileDialogState();
+}
+
+class _EditProfileDialogState extends State<_EditProfileDialog> {
+  final _formKey = GlobalKey<FormState>();
+  final _picker = ImagePicker();
+  late final TextEditingController _nameController;
+  late final TextEditingController _emailController;
+  Uint8List? _photoBytes;
+  bool _selectingPhoto = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.initialName);
+    _emailController = TextEditingController(text: widget.initialEmail);
+    _photoBytes = widget.initialPhoto;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Editar perfil'),
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              UserAvatar(radius: 48, imageBytes: _photoBytes),
+              const SizedBox(height: 8),
+              TextButton.icon(
+                onPressed: _selectingPhoto ? null : _pickPhoto,
+                icon: _selectingPhoto
+                    ? const SizedBox.square(
+                        dimension: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.photo_library_outlined),
+                label: const Text('Cambiar foto'),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _nameController,
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(
+                  labelText: 'Nombre',
+                  prefixIcon: Icon(Icons.person_outline),
+                ),
+                validator: (value) => value == null || value.trim().isEmpty
+                    ? 'Ingresa tu nombre'
+                    : null,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Correo',
+                  prefixIcon: Icon(Icons.email_outlined),
+                ),
+                validator: (value) {
+                  final email = value?.trim() ?? '';
+                  if (email.isEmpty) return 'Ingresa tu correo';
+                  if (!email.contains('@') || !email.contains('.')) {
+                    return 'Ingresa un correo válido';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancelar'),
+        ),
+        FilledButton.icon(
+          onPressed: _save,
+          icon: const Icon(Icons.save_outlined),
+          label: const Text('Guardar'),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _pickPhoto() async {
+    setState(() => _selectingPhoto = true);
+    try {
+      final file = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 900,
+        imageQuality: 85,
+        requestFullMetadata: false,
+      );
+      if (file == null) return;
+      final bytes = await file.readAsBytes();
+      if (mounted) setState(() => _photoBytes = bytes);
+    } finally {
+      if (mounted) setState(() => _selectingPhoto = false);
+    }
+  }
+
+  void _save() {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+    Navigator.pop(
+      context,
+      _ProfileUpdate(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        photoBytes: _photoBytes,
+      ),
+    );
   }
 }
 

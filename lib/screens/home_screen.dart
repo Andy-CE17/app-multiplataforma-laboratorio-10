@@ -6,6 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/gradient_button.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/network_art.dart';
+import '../widgets/user_avatar.dart';
 import 'details_screen.dart';
 import 'video_player_screen.dart';
 
@@ -51,11 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Row(
                     children: [
-                      const CircleAvatar(
+                      UserAvatar(
                         radius: 22,
-                        backgroundImage: AssetImage(
-                          'assets/images/piero_avatar.png',
-                        ),
+                        imageBytes: repository.profilePhotoBytes,
                       ),
                       const SizedBox(width: 12),
                       Expanded(

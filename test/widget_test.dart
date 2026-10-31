@@ -32,5 +32,18 @@ void main() {
     await tester.tap(find.text('Perfil'));
     await tester.pumpAndSettle();
     expect(find.text('NOVA Premium'), findsOneWidget);
+
+    await tester.tap(find.text('Editar perfil'));
+    await tester.pumpAndSettle();
+    expect(find.text('Cambiar foto'), findsOneWidget);
+
+    final fields = find.byType(TextFormField);
+    await tester.enterText(fields.at(0), 'Andy Campos');
+    await tester.enterText(fields.at(1), 'andy@nova.com');
+    await tester.tap(find.text('Guardar'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Andy Campos'), findsOneWidget);
+    expect(find.text('andy@nova.com'), findsOneWidget);
   });
 }

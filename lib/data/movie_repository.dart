@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 
 import '../models/movie.dart';
@@ -16,6 +18,7 @@ class MovieRepository extends ChangeNotifier {
   bool darkMode = true;
   String userName = 'Andy Campos';
   String email = 'piero@nova.com';
+  Uint8List? profilePhotoBytes;
 
   List<Movie> movies = _fallbackMovies;
 
@@ -63,9 +66,10 @@ class MovieRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateProfile(String name, String newEmail) {
+  void updateProfile(String name, String newEmail, {Uint8List? photoBytes}) {
     userName = name;
     email = newEmail;
+    if (photoBytes != null) profilePhotoBytes = photoBytes;
     notifyListeners();
   }
 }
