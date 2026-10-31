@@ -1,38 +1,26 @@
-# NOVA STREAM - Laboratorio 10
+# NOVA STREAM
 
-Aplicación móvil de streaming desarrollada con Flutter.
+Aplicación móvil de streaming desarrollada en Flutter para el Laboratorio 10.
 
-## Contenido aplicado
+## Funcionalidades
 
-- ListView y ListView.builder.
-- ListTile, Row, Column y Card.
-- Listas y mapas.
-- Rutas y navegación inferior.
-- Tema global.
-- Tres tipografías mediante Google Fonts.
-- Imágenes locales e imágenes desde internet.
-- Integración opcional con TMDB.
+- Inicio de sesión.
+- Catálogo y categorías de películas.
+- Detalles y reproducción de video.
+- Lista de favoritos.
+- Perfil editable con nombre, correo y foto.
 
 ## Ejecución
 
-Sin token, la aplicación utiliza datos de respaldo:
-
 ```bash
+flutter pub get
 flutter run -d chrome
 ```
 
-Con TMDB:
+## Acceso de prueba
 
-```bash
-flutter run -d chrome --dart-define=TMDB_TOKEN=TU_TOKEN
-```
-
-## Usuario de demostración
-
-```text
-Correo: demo@nova.com
-Contraseña: 123456
-```
+- Correo: `demo@nova.com`
+- Contraseña: `123456`
 
 ## Atribución
 

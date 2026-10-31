@@ -46,3 +46,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Evidencias locales
+.docx_qa/
+Evidencias_Laboratorio_10_NOVA_STREAM_APA7.docx
