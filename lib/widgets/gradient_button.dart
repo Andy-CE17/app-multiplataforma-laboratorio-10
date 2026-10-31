@@ -18,27 +18,34 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Ink(
-        height: height,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [NovaColors.cyan, NovaColors.blue, NovaColors.violet],
+    return Semantics(
+      container: true,
+      explicitChildNodes: true,
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Ink(
+          height: height,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [NovaColors.cyan, NovaColors.blue, NovaColors.violet],
+            ),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: const [
+              BoxShadow(color: Color(0x443478FF), blurRadius: 15),
+            ],
           ),
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: const [
-            BoxShadow(color: Color(0x443478FF), blurRadius: 15),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 20),
-            const SizedBox(width: 8),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
-          ],
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 20),
+              const SizedBox(width: 8),
+              Text(label, style: const TextStyle(fontWeight: FontWeight.w700)),
+            ],
+          ),
         ),
       ),
     );

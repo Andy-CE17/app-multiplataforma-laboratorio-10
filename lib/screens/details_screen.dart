@@ -6,6 +6,7 @@ import '../theme/app_theme.dart';
 import '../widgets/gradient_button.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/network_art.dart';
+import 'video_player_screen.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({required this.movie, super.key});
@@ -55,7 +56,7 @@ class DetailsScreen extends StatelessWidget {
                     ),
                     Center(
                       child: InkWell(
-                        onTap: () => _showPlayMessage(context),
+                        onTap: () => _playMovie(context),
                         borderRadius: BorderRadius.circular(40),
                         child: Container(
                           width: 66,
@@ -126,7 +127,7 @@ class DetailsScreen extends StatelessWidget {
                   GradientButton(
                     label: 'Reproducir',
                     icon: Icons.play_arrow,
-                    onTap: () => _showPlayMessage(context),
+                    onTap: () => _playMovie(context),
                   ),
                   const SizedBox(height: 10),
                   OutlinedButton.icon(
@@ -181,9 +182,13 @@ class DetailsScreen extends StatelessWidget {
     );
   }
 
-  void _showPlayMessage(BuildContext context) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Reproduciendo ${movie.title}')));
+  void _playMovie(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NovaVideoPlayerScreen(movie: movie),
+      ),
+    );
   }
 }
 

@@ -7,6 +7,7 @@ import '../widgets/gradient_button.dart';
 import '../widgets/movie_card.dart';
 import '../widgets/network_art.dart';
 import 'details_screen.dart';
+import 'video_player_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -130,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     _FeaturedMovie(
                       movie: featured,
                       isSaved: repository.isSaved(featured),
-                      onPlay: () => _playMessage(featured),
+                      onPlay: () => _playMovie(featured),
                       onList: () => repository.toggleSaved(featured),
                     ),
                     const SizedBox(height: 20),
@@ -164,9 +165,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _playMessage(Movie movie) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text('Reproduciendo ${movie.title}')));
+  void _playMovie(Movie movie) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NovaVideoPlayerScreen(movie: movie),
+      ),
+    );
   }
 }
 
